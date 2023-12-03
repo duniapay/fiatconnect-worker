@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios'
 import { IKYCJobData, ITransferEventData } from '../types'
 import { QueueOptions } from 'bullmq'
 import { FIVE_MINUTES } from './constant';
+import { logger } from './logger';
 
 const webhookUrl = process.env.WEBHOOK_URL ?? '';
 const webhookProviderId= process.env.PROVIDER_ID ?? '';
