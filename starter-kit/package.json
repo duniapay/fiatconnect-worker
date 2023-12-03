@@ -14,7 +14,9 @@
     "nodemon": "nodemon"
   },
   "dependencies": {
-    "@fiatconnect/fiatconnect-types": "^13.2.2"
+    "@fiatconnect/fiatconnect-types": "^13.2.2",
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
