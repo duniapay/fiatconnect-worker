@@ -1,10 +1,9 @@
-import { TransferStatus, TransferType } from '@fiatconnect/fiatconnect-types';
+import { IKYCJobData, ITransferEventData } from "webhook";
+import { JobRecord } from "queues";
 
-export type JobRecord = {
-  quoteId: string;
-  fiatAccountId: string;
-  transferType: TransferType;
-  transferAddress: string;
-  status: TransferStatus;
-  userAddress: string;
-};
+
+export {
+    IKYCJobData,
+    ITransferEventData,
+    JobRecord
+}
