@@ -1,5 +1,5 @@
 {
-  "name": "node-typescript-starter-kit",
+  "name": "worker",
   "version": "1.0.0",
   "main": "dist/index.js",
   "repository": "",
@@ -11,16 +11,26 @@
     "test": "jest",
     "test:watch": "jest --watchAll",
     "ts-node": "ts-node",
-    "nodemon": "nodemon"
+    "nodemon": "nodemon",
+    "start": "node --max-old-space-size=1536 dist/index.js",
+    "generate": "prisma generate",
+    "prisma-studio": "prisma studio",
+    "db-reset": "prisma migrate dev reset",
+    "migrate-dev": "prisma migrate dev",
+    "migrate": "prisma migrate deploy",
+    "postinstall": "yarn prisma generate"
   },
   "dependencies": {
     "@fiatconnect/fiatconnect-types": "^13.2.2",
     "axios": "^1.6.2",
     "bullmq": "^4.14.4"
+    "winston": "^3.8.2",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
+    "prisma": "^4.12.0",
     "@babel/preset-typescript": "^7.10.4",
     "@types/jest": "^26.0.13",
     "@types/node": "^14.6.4",

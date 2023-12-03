@@ -1,0 +1,173 @@
+// This is your Prisma schema file,
+// learn more about it in the docs https//pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+  
+}
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.Text
+  expiresAt DateTime
+}
+
+model Transfer {
+  transferId      String           @unique @default(uuid())
+  quoteId         String           @unique
+  transferAddress String
+  accountId       String
+  amountProvided  String
+  amountReceived  String
+  fee             String
+  fiatType        FiatType         @default(XOF)
+  cryptoType      CryptoType       @default(cUSD)
+  transferType    String
+  fiatAccountId   String
+  txHash          String
+  // To return `Date`s intact through the API we use transformers
+  // https//trpc.io/docs/data-transformers
+  // This is unique so it can be used for cursor-based pagination
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now()) @updatedAt
+  transferStatus  TransferStatus   @default(TransferStarted)
+  status          TransferStatus   @default(TransferStarted)
+  events          TransferStatus[]
+
+  @@id([accountId, transferId, quoteId])
+  @@index([quoteId])
+}
+
+model Account {
+  fiatAccountId   String  @unique @default(uuid())
+  institutionName String
+  accountName     String
+  mobile          String?
+  country         String
+
+  accountNumber String
+  operator      String?
+
+  fiatAccountType FiatAccountType @default(BankAccount)
+
+  owner String @unique
+
+  fiatAccountSchema FiatAccountSchema @default(AccountNumber)
+
+  // To return `Date`s intact through the API we use transformers
+  // https//trpc.io/docs/data-transformers
+  // This is unique so it can be used for cursor-based pagination
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  @@id([fiatAccountId, owner, fiatAccountType])
+  @@index([owner, fiatAccountId])
+}
+
+model KYC {
+  id                     Int       @id @default(autoincrement())
+  kycSchemaName          String
+  owner                  String
+  status                 KycStatus @default(KycPending)
+  firstName              String
+  middleName             String
+  lastName               String
+  phoneNumber            String
+  selfieDocument         String?
+  identificationDocument String?
+  address                Json?
+
+  // To return `Date`s intact through the API we use transformers
+  // https//trpc.io/docs/data-transformers
+  // This is unique so it can be used for cursor-based pagination
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  dateOfBirth Json?
+
+  @@unique([kycSchemaName, owner])
+}
+
+enum FiatAccountType {
+  BankAccount
+  MobileMoney
+  DuniaWallet
+}
+
+enum TransferType {
+  TransferIn
+  TransferOut
+}
+
+enum FiatAccountSchema {
+  AccountNumber
+  MobileMoney
+  DuniaWallet
+  IBANNumber
+  IFSCAccount
+  PIXAccount
+}
+
+enum TransferStatus {
+  TransferStarted
+  TransferFiatFundsDebited
+  TransferReceivedFiatFunds
+  TransferSendingCryptoFunds
+  TransferAmlFailedformattedBody
+  TransferReadyForUserToSendCryptoFunds
+  TransferReceivedCryptoFunds
+  TransferComplete
+  TransferFailed
+}
+
+enum FiatType {
+  USD
+  EUR
+  BRL
+  GNF
+  INR
+  NGN
+  GHS
+  KES
+  ZAR
+  PHP
+  UGX
+  GBP
+  XOF
+  RWF
+  CNY
+  XAF
+  ARS
+  BOB
+  CLP
+  COP
+  FKP
+  GYD
+  PYG
+  PEN
+  SRD
+  UYU
+  VES
+  MXN
+  PAB
+}
+
+enum CryptoType {
+  cUSD
+  cEUR
+  cREAL
+  CELO
+}
+
+enum KycStatus {
+  KycNotCreated
+  KycPending
+  KycApproved
+  KycDenied
+  KycExpired
+}
