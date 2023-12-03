@@ -8,3 +8,4 @@ export type JobRecord = {
   status: TransferStatus;
   userAddress: string;
 };
+
