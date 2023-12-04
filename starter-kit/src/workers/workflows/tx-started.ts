@@ -7,12 +7,13 @@ import {
   WebhookEventType,
   TransferStatus,
 } from '@fiatconnect/fiatconnect-types'
-import { JobRecord, JobType } from '../../types'
+
 import { logger } from '../../utils/logger'
 import apiCall, { optsDefault } from '../../utils/queue'
 import { formatAndSendPaymentEvent } from '../../utils/webhook'
 import { prisma, redisClient } from '../../db'
-
+import { JobRecord } from '../../types/queues'
+import { JobType } from '../../types/webhook'
 
 export const TxStartedWorker = new Worker<JobRecord>(
   JobType.PAYMENT_PROCESSING_STARTED, //Define a queue for the worker

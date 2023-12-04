@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { logger } from '../../../utils/logger'
 import { Worker } from 'bullmq'
-import { JobRecord, JobType } from '../../../types'
+import { JobRecord } from '../../../types/queues'
+import { JobType } from '../../../types/webhook'
 import { optsDefault } from '../../../utils/queue'
 import { prisma, redisClient } from '../../../db'
 
