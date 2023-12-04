@@ -7,7 +7,8 @@ import {
   WebhookEventType,
   TransferStatus,
 } from '@fiatconnect/fiatconnect-types'
-import { JobRecord, JobType } from '../../types'
+import { JobRecord } from '../../types/queues'
+import { JobType } from '../../types/webhook'
 import { formatAndSendPaymentEvent } from '../../utils/webhook'
 import apiCall, { optsDefault } from '../../utils/queue'
 import { prisma, redisClient } from '../../db'

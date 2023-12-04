@@ -8,11 +8,12 @@ import {
   FiatType,
   TransferType,
 } from '@fiatconnect/fiatconnect-types'
-import { JobRecord, JobType } from '../../types'
+
 import apiCall, { optsDefault } from '../../utils/queue'
 import { formatAndSendPaymentEvent } from '../../utils/webhook'
 import { prisma, redisClient } from '../../db'
-
+import { JobRecord } from '../../types/queues'
+import { JobType } from '../../types/webhook'
 export const txCompleteWorker = new Worker<JobRecord>(
   JobType.PAYMENT_PROCESSING_COMPLETE, //Define a queue for the worker
   async (job) => {

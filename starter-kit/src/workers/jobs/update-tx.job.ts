@@ -1,5 +1,6 @@
 import { FlowJob, FlowProducer } from 'bullmq'
-import { JobRecord, JobType } from '../../types'
+import { JobRecord } from '../../types/queues'
+import { JobType } from '../../types/webhook'
 import { optsDefault } from '../../utils/queue'
 
 

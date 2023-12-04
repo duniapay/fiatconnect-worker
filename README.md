@@ -39,6 +39,13 @@ yarn install
 npm install
 ```
 
+
+```bash
+cp starter-kit/env.example .env
+
+source .env
+```
+
 And you can directly start coding!
 
 ![starterkit](https://user-images.githubusercontent.com/32297675/53011741-c68e9200-3449-11e9-8746-01bcc0fff247.gif)

@@ -8,7 +8,7 @@ import {
     TransferType,
   } from '@fiatconnect/fiatconnect-types'
   import { nanoid } from 'nanoid'
-import { ITransferEventData } from '../types'
+import { ITransferEventData } from '../types/webhook'
   
   
   export const timestamp = Math.round(new Date().getTime() / 1000).toString()

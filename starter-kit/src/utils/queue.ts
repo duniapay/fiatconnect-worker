@@ -1,6 +1,6 @@
 import { createHmac } from 'crypto'
 import axios, { AxiosResponse } from 'axios'
-import { IKYCJobData, ITransferEventData } from '../types'
+import { IKYCJobData, ITransferEventData } from '../types/webhook'
 import { QueueOptions } from 'bullmq'
 import { FIVE_MINUTES } from './constant';
 import { logger } from './logger';
