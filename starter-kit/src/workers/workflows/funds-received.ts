@@ -16,7 +16,7 @@ import { prisma, redisClient } from '../../db'
 
 export const cryptoReceivedWorker = new Worker<JobRecord>(
   JobType.PAYMENT_PROCESSING_CRYPTO_RECEIVED, //Define a queue for the worker
-  async (job) => {
+  async (job:any) => {
     const {
       quoteId,
       transferAddress,
@@ -73,3 +73,23 @@ export const cryptoReceivedWorker = new Worker<JobRecord>(
   },
   { connection: optsDefault.connection },
 )
+
+
+
+
+cryptoReceivedWorker.on('completed', (job: any) => {
+  logger.info(`Job completed with result ${job.returnvalue}`)
+})
+cryptoReceivedWorker.on('waiting', (job: any) => {
+    // Job is waiting to be processed.
+  logger.info(`Job waiting`)
+})
+cryptoReceivedWorker.on('drained', () => {
+    // Queue is drained, no more jobs left
+  logger.info(`Queue is drained, no more jobs left`)
+})
+cryptoReceivedWorker.on('failed', (job: any) => {
+    // job has failed
+  logger.info(`job has failed`)
+})
+
