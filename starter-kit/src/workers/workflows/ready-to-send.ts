@@ -71,3 +71,22 @@ export const readyToSendTxWorker = new Worker<JobRecord>(
   },
   { connection: optsDefault.connection },
 )
+
+
+
+TxStartedWorker.on('completed', (job: any) => {
+  logger.info(`Job completed with result ${job.returnvalue}`)
+})
+TxStartedWorker.on('waiting', (job: any) => {
+    // Job is waiting to be processed.
+  logger.info(`Job waiting`)
+})
+TxStartedWorker.on('drained', () => {
+    // Queue is drained, no more jobs left
+  logger.info(`Queue is drained, no more jobs left`)
+})
+TxStartedWorker.on('failed', (job: any) => {
+    // job has failed
+  logger.info(`job has failed`)
+})
+

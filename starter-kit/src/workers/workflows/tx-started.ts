@@ -15,9 +15,14 @@ import { prisma, redisClient } from '../../db'
 import { JobRecord } from '../../types/queues'
 import { JobType } from '../../types/webhook'
 
+/**
+ * Worker for processing started payment transactions.
+ * @param job - The job containing data for the transaction.
+ * @returns The status of the transaction processing.
+ */
 export const TxStartedWorker = new Worker<JobRecord>(
   JobType.PAYMENT_PROCESSING_STARTED, //Define a queue for the worker
-  async (job) => {
+  async (job: any) => {
     const {
       quoteId,
       transferAddress,
@@ -95,3 +100,21 @@ export const TxStartedWorker = new Worker<JobRecord>(
   },
   { connection: optsDefault.connection },
 )
+
+TxStartedWorker.on('completed', (job: any) => {
+  logger.info(`Job completed with result ${job.returnvalue}`)
+})
+TxStartedWorker.on('waiting', (job: any) => {
+    // Job is waiting to be processed.
+  logger.info(`Job waiting`)
+})
+TxStartedWorker.on('drained', () => {
+    // Queue is drained, no more jobs left
+  logger.info(`Queue is drained, no more jobs left`)
+})
+TxStartedWorker.on('failed', (job: any) => {
+    // job has failed
+  logger.info(`job has failed`)
+})
+
+

@@ -11,12 +11,8 @@ const prisma = new PrismaClient()
 async function start() {
   try {
     // Connect to the named work queue
-    TxStartedWorker.on('completed', (job) => {
-      logger.info(`Job completed with result ${job.returnvalue}`)
-    })
-    readyToSendTxWorker.on('completed', (job) => {
-      logger.info(`Job completed with result ${job.returnvalue}`)
-    })
+
+
     cryptoReceivedWorker.on('completed', (job) => {
       logger.info(`Job completed with result ${job.returnvalue}`)
     })
