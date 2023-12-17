@@ -1,5 +1,9 @@
-require('dotenv').config()
+import path from 'path';
+import dotenv from 'dotenv';
 
+const envPath = path.resolve(__dirname, '../..', '.env');
+
+dotenv.config({ path: envPath });
 import { createHmac } from 'crypto'
 import axios, { AxiosResponse } from 'axios'
 import { IKYCJobData, ITransferEventData } from '../types/webhook'
