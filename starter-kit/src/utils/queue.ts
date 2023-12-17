@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 import { createHmac } from 'crypto'
 import axios, { AxiosResponse } from 'axios'
 import { IKYCJobData, ITransferEventData } from '../types/webhook'
