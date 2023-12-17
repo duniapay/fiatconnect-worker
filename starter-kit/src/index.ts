@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client"
-import { logger } from "./utils/logger"
+require('dotenv').config()
+
 import { createWorker } from "./workers/factory";
 import { optsDefault } from "./utils/queue";
 import { notificationsQueueName, paymentCompleteQueueName, paymentReceivedQueueName, paymentStartedQueueName, paymentsReadyQueueName } from "./workers/types";
