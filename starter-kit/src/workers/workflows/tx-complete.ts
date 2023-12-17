@@ -1,4 +1,4 @@
-import { Worker } from 'bullmq'
+import { Job } from 'bullmq'
 import { logger } from '../../utils/logger'
 
 import {
@@ -9,21 +9,18 @@ import {
   TransferType,
 } from '@fiatconnect/fiatconnect-types'
 
-import apiCall, { optsDefault } from '../../utils/queue'
+import apiCall from '../../utils/queue'
 import { formatAndSendPaymentEvent } from '../../utils/webhook'
 import { prisma, redisClient } from '../../db'
 import { JobRecord } from '../../types/queues'
-import { JobType } from '../../types/webhook'
-export const txCompleteWorker = new Worker<JobRecord>(
-  JobType.PAYMENT_PROCESSING_COMPLETE, //Define a queue for the worker
-  async (job) => {
-    const {
-      quoteId,
-      transferAddress,
-      userAddress,
-      transferType,
-      fiatAccountId,
-    } = job.data //Get data fed from the queue.
+export default async function (job: Job<JobRecord>) {
+  const {
+    quoteId,
+    transferAddress,
+    userAddress,
+    transferType,
+    fiatAccountId,
+  } = job.data  //Get data fed from the queue.
     const status = TransferStatus.TransferComplete
 
     try {
@@ -69,6 +66,7 @@ export const txCompleteWorker = new Worker<JobRecord>(
       logger.warn('Could not create a record in Route53', error)
       throw error
     }
-  },
-  { connection: optsDefault.connection },
-)
+  }
+
+
+
