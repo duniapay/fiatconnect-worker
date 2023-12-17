@@ -1,4 +1,8 @@
-require('dotenv').config()
+import path from 'path';
+import dotenv from 'dotenv';
+
+const envPath = path.resolve(__dirname, '..', '.env');
+dotenv.config({ path: envPath });
 
 import { createWorker } from "./workers/factory";
 import { optsDefault } from "./utils/queue";
