@@ -1,44 +1,51 @@
 import { PrismaClient } from "@prisma/client"
 import { logger } from "./utils/logger"
-import { cryptoReceivedWorker } from "./workers/workflows/funds-received"
-import { readyToSendTxWorker } from "./workers/workflows/ready-to-send"
-import { slackNotifierWorker } from "./workers/workflows/slack/send-slack-message"
-import { txCompleteWorker } from "./workers/workflows/tx-complete"
-import { TxStartedWorker } from "./workers/workflows/tx-started"
+import { createWorker } from "./workers/factory";
+import { optsDefault } from "./utils/queue";
+import { notificationsQueueName, paymentCompleteQueueName, paymentReceivedQueueName, paymentStartedQueueName, paymentsReadyQueueName } from "./workers/types";
 
-const prisma = new PrismaClient()
-
-async function start() {
-  try {
-    // Connect to the named work queue
+import paymentsReadyProcessor from "./workers/workflows/ready-to-send";
+import paymentCompleteProcessor from "./workers/workflows/tx-complete";
+import paymentReceivedProcessor from "./workers/workflows/funds-received";
+import paymentStartedProcessor from "./workers/workflows/tx-started";
+import notificationsProcessor from "./workers/workflows/slack/send-slack-message";
 
 
-    cryptoReceivedWorker.on('completed', (job) => {
-      logger.info(`Job completed with result ${job.returnvalue}`)
-    })
-    txCompleteWorker.on('completed', (job) => {
-      logger.info(`Job completed with result ${job.returnvalue}`)
-    })
-    slackNotifierWorker.on('completed', (job) => {
-      logger.info(`Job completed with result ${job.returnvalue}`)
-    })
-  } catch (error) {
-    throw error
-  }
-}
+const { worker: paymentStartedWorker } = createWorker(
+  paymentStartedQueueName,
+  paymentStartedProcessor,
+  optsDefault
+);
 
-start()
-  .then(async () => {
-    // Log a warning message when the Promise resolves successfully
-    logger.warn('Worker started')
-  })
-  .catch(async (err) => {
-    // Log an error message and exit the process with an error code when the Promise rejects
-    logger.error(err)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
-  .finally(async () => {
-    // Disconnect from the Prisma client when the Promise either resolves or rejects
-    await prisma.$disconnect()
-  })
+const { worker: paymentReceivedWorker } =
+  createWorker(paymentReceivedQueueName, paymentReceivedProcessor, optsDefault, 8);
+
+const { worker: paymentReadyToSendWorker } = createWorker(
+  paymentsReadyQueueName,
+  paymentsReadyProcessor,
+  optsDefault
+);
+
+const { worker: paymentCompleteWorker } = createWorker(
+  paymentCompleteQueueName,
+  paymentCompleteProcessor,
+  optsDefault
+);
+
+const { worker: notificationsWorker } = createWorker(
+  notificationsQueueName,
+  notificationsProcessor,
+  optsDefault
+);
+
+process.on("SIGTERM", async () => {
+  console.info("SIGTERM signal received: closing queues");
+
+  await paymentStartedWorker.close();
+  await paymentReceivedWorker.close();
+  await paymentReadyToSendWorker.close();
+  await paymentCompleteWorker.close();
+  await notificationsWorker.close();
+
+  console.info("All closed");
+});

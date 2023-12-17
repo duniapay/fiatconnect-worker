@@ -37,6 +37,7 @@
     "node-typescript-starter-kit": "./cli.js"
   },
   "devDependencies": {
+    "@types/node": "^20.10.4",
     "standard-version": "^9.0.0"
   }
 }

@@ -1,9 +1,7 @@
 import axios from 'axios'
 import { logger } from '../../../utils/logger'
-import { Worker } from 'bullmq'
+import { Job, Worker } from 'bullmq'
 import { JobRecord } from '../../../types/queues'
-import { JobType } from '../../../types/webhook'
-import { optsDefault } from '../../../utils/queue'
 import { prisma, redisClient } from '../../../db'
 
 const slackChannelId = process.env.SLACK_CHANNEL_ID ?? ''; 
@@ -69,9 +67,8 @@ export async function sendSlackMessage({
     })
 }
 
-export const slackNotifierWorker = new Worker<JobRecord>(
-  JobType.PAYMENT_PROCESSING_NOTIFIER, //Define a queue for the worker
-  async (job) => {
+export default async function (job: Job<JobRecord>) {
+
     const { quoteId, transferType, fiatAccountId } = job.data //Get data fed from the queue.
 
     try {
@@ -107,6 +104,9 @@ export const slackNotifierWorker = new Worker<JobRecord>(
     } catch (error) {
       logger.error(error)
     }
-  },
-  { connection: optsDefault.connection },
-)
+  }
+
+
+
+
+
